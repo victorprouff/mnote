@@ -1,8 +1,7 @@
 <script lang="ts">
   import MarkdownIt from 'markdown-it';
-  import { readFile } from '../lib/tauri';
 
-  let { filePath }: { filePath: string } = $props();
+  let { content }: { content: string } = $props();
 
   const md = new MarkdownIt({
     html: false,
@@ -11,41 +10,17 @@
   });
 
   let rendered = $state('');
-  let loading = $state(false);
-  let error: string | null = $state(null);
 
   $effect(() => {
-    if (filePath) {
-      loadFile(filePath);
-    }
+    rendered = md.render(content);
   });
-
-  async function loadFile(path: string) {
-    loading = true;
-    error = null;
-    rendered = '';
-    try {
-      const content = await readFile(path);
-      rendered = md.render(content);
-    } catch (e) {
-      error = String(e);
-    } finally {
-      loading = false;
-    }
-  }
 </script>
 
 <div class="preview-container">
-  {#if loading}
-    <div class="state">Loading...</div>
-  {:else if error}
-    <div class="state error">{error}</div>
-  {:else}
-    <div class="markdown-body">
-      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-      {@html rendered}
-    </div>
-  {/if}
+  <div class="markdown-body">
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+    {@html rendered}
+  </div>
 </div>
 
 <style>
@@ -54,17 +29,6 @@
     overflow-y: auto;
     padding: 48px 64px;
     background: var(--bg-primary);
-  }
-
-  .state {
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 48px;
-    font-size: 14px;
-  }
-
-  .state.error {
-    color: #f48771;
   }
 
   .markdown-body {

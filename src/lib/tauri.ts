@@ -16,6 +16,10 @@ export async function readFile(path: string): Promise<string> {
   return invoke<string>('read_file', { path });
 }
 
+export async function saveFile(path: string, content: string): Promise<void> {
+  return invoke<void>('save_file', { path, content });
+}
+
 export async function saveVaultPath(path: string): Promise<void> {
   return invoke<void>('save_vault_path', { path });
 }

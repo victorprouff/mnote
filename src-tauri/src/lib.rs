@@ -9,6 +9,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             read_directory,
             read_file,
+            save_file,
             save_vault_path,
             get_vault_path,
         ])
